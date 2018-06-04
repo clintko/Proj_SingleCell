@@ -2,6 +2,38 @@ import numpy as np
 import numpy.random as rand
 import umap
 
+def data_scaling(samples, idx_sample = 0, verbose = False):
+    """standardized features of all samples using one group of samples
+    
+    Position arguments:
+    samples    --- numpy array; (num_samples_tot, num_cells_tot, num_features)
+                   note: the num_cells_tot is not fixed for each samples
+    idx_sample --- int; which sample is used for standardization; default to 0
+    
+    Keyword arguments:
+    verbose --- print out the running process
+    """
+    
+    if (verbose):
+        print("Data Scaling...")
+    
+    # calculate mu and sd
+    res = samples[idx_sample] 
+    #mu  = np.mean(res, axis=0)
+    #sd  = np.std( res, axis=0)
+    X_col_max = np.max(res, axis = 0)
+    X_col_min = np.min(res, axis = 0)
+    
+    # standardize
+    #samples_stdard = np.array( [(sample - mu) / sd for sample in samples] )    
+    samples_scaled = np.array([(sample - X_col_min) / (X_col_max - X_col_min) for sample in samples])
+    
+    if (verbose):
+        print("...Finish")
+        
+    return(samples_scaled)
+
+
 def data_standardization(samples, idx_sample = 0, verbose = False):
     """standardized features of all samples using one group of samples
     
@@ -19,14 +51,14 @@ def data_standardization(samples, idx_sample = 0, verbose = False):
     
     # calculate mu and sd
     res = samples[idx_sample] 
-    #mu  = np.mean(res, axis=0)
-    #sd  = np.std( res, axis=0)
-    X_col_max = np.max(X, axis = 0)
-    X_col_min = np.min(X, axis = 0)
+    mu  = np.mean(res, axis=0)
+    sd  = np.std( res, axis=0)
+    #X_col_max = np.max(X, axis = 0)
+    #X_col_min = np.min(X, axis = 0)
     
     # standardize
-    #samples_stdard = np.array( [(sample - mu) / sd for sample in samples] )    
-    samples_stdard = np.array([(X - X_col_min) / (X_col_max - X_col_min) for sample in samples])
+    samples_stdard = np.array( [(sample - mu) / sd for sample in samples] )    
+    #samples_stdard = np.array([(X - X_col_min) / (X_col_max - X_col_min) for sample in samples])
     
     if (verbose):
         print("...Finish")
